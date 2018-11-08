@@ -9,7 +9,11 @@
               <div class="right" @click="pageNext"></div>
           </div>
       </div>
-      <menu-bar :ifTitleAndMenuShow='ifTitleAndMenuShow' ref="menuBar"></menu-bar>
+      <menu-bar 
+      :ifTitleAndMenuShow='ifTitleAndMenuShow' ref="menuBar" 
+      :fontSizeList="fontSizeList"
+      :defaultFontSize="defaultFontSize"
+      @setFontSize="setFontSize"></menu-bar>
   </div>
 </template>
 
@@ -27,16 +31,30 @@ export default {
   },
   data() {
     return {
-      ifTitleAndMenuShow: true
+      ifTitleAndMenuShow: true,
+      fontSizeList: [
+        { fontSize: 12 },
+        { fontSize: 14 },
+        { fontSize: 16 },
+        { fontSize: 18 },
+        { fontSize: 20 },
+        { fontSize: 22 },
+        { fontSize: 24 }
+      ],
+      defaultFontSize: 16
     };
   },
   created() {
     this.showEpub();
   },
   methods: {
+    setFontSize(fontsize) {
+      this.defaultFontSize = fontsize;
+      this.themes.fontSize(fontsize + "px");
+    },
     toggleTitleAndMenu() {
       this.ifTitleAndMenuShow = !this.ifTitleAndMenuShow;
-      this.$refs.menuBar.hideSetting()
+      this.$refs.menuBar.hideSetting();
     },
     showEpub() {
       //生成电子书
@@ -48,6 +66,7 @@ export default {
       });
       //通过Rendition.display渲染电子书
       this.rendition.display();
+      this.themes = this.rendition.themes;
     },
     pagePrev() {
       this.rendition.prev();
